@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     titleCtx,
     townCtx,
     start: () => {
-      titleCtx.drawImage(titleImage, 300, 0);
+      titleCtx.drawImage(titleImage, 0, 1, 680, 180, 250, 0, 680, 180);
       titleCtx.drawImage(singlePlayer, 500, 300);
       townCtx.drawImage(townImage, 0, 0);
       game.previousLocationIndex = game.currentLocationIndex;
