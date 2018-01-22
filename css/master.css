@@ -3,7 +3,16 @@
   top: 0;
   left: 0;
   border: 10px solid black;
-  margin-top: 100px;
-  margin-left: 100px;
+  margin-top: 0px;
+  margin-left: 0px;
   background-color: black;
+  z-index: -1;
+}
+
+#town {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: blue;
+  z-index: 0;
 }
