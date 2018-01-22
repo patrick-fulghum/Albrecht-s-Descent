@@ -1,4 +1,5 @@
-import helperFunctions from "./helperFunctions";
+// import { helperFunctions } from "./helperFunctions";
+import * as helperFunctions from "./helperFunctions";
 
 document.addEventListener("DOMContentLoaded", () => {
   const titleCanvas = document.getElementById("title");
@@ -20,6 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     titleCtx,
     start: () => {
+      if (game.map.town) {
+        debugger
+      }
       titleCtx.drawImage(titleImage, 300, 0);
       titleCtx.drawImage(singlePlayer, 500, 300);
     },
@@ -30,9 +34,18 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   document.addEventListener("click", (e) => {
     if (game.map.title) {
-      debugger
+      if (helperFunctions.myRange(
+        e.clientX, e.clientY, 0, 6200, 0, 4000
+      )) {
+        game.map.title = false;
+        game.map.town = true;
+      }
     }
-    // if (game.title)
+      // if (helperFunctions.range(e.windowX, 0, 6000)) {
+      //   if (helperFunctions.range(e.windowY, 0, 4000)) {
+      //     console.log("Ya Right");
+      //   }
+      // }
   });
   step();
 });
