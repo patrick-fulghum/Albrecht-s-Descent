@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
   titleImage.src = "assets/Descent_title.png";
   const singlePlayer = new Image();
   singlePlayer.src = "assets/single_player.png";
+  const townImage = new Image;
+  townImage.src = "assets/townImage.png";
   const game = {
     albrecht: {
       x: 550,
@@ -35,6 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     start: () => {
       titleCtx.drawImage(titleImage, 300, 0);
       titleCtx.drawImage(singlePlayer, 500, 300);
+      townCtx.drawImage(townImage, 0, 0);
       game.previousLocationIndex = game.currentLocationIndex;
       game.currentLocationIndex = helperFunctions.currentLocation(game.map);
       document.getElementById(
@@ -49,6 +52,17 @@ document.addEventListener("DOMContentLoaded", () => {
     game.start();
     requestAnimationFrame(step);
   };
+  document.addEventListener("mousemove", (e) => {
+    if (game.map.title.here) {
+      if (helperFunctions.myRange(
+        e.clientX, e.clientY, 513, 715, 318, 343
+      )) {
+        singlePlayer.src = "assets/single_player_hover.png";
+      } else {
+        singlePlayer.src = "assets/single_player.png";
+      }
+    }
+  });
   document.addEventListener("click", (e) => {
     if (game.map.title.here) {
       if (helperFunctions.myRange(
