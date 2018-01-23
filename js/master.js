@@ -19,6 +19,16 @@ document.addEventListener("DOMContentLoaded", () => {
       x: 550,
       y: 300,
     },
+    actions: {
+      walk: true,
+      talk: false,
+      look: false,
+      swallow: false,
+      use: false,
+      push: false,
+      take: false,
+      give: false,
+    },
     locations: [
       "title", "town"
     ],
@@ -44,13 +54,13 @@ document.addEventListener("DOMContentLoaded", () => {
       townCtx.font = '28px serif';
       townCtx.fillStyle = "green";
       townCtx.fillText("Walk To", 245, 500);
-      townCtx.fillText("Talk To", 475, 500);
+      townCtx.fillText("Talk To", 480, 500);
       townCtx.fillText("Look At", 245, 540);
-      townCtx.fillText("Swallow", 455, 540);
-      townCtx.fillText("Use", 245, 580);
-      townCtx.fillText("Push", 475, 580);
-      townCtx.fillText("Take", 245, 620);
-      townCtx.fillText("Give", 475, 620);
+      townCtx.fillText("Swallow", 475, 540);
+      townCtx.fillText("Use", 270, 580);
+      townCtx.fillText("Push", 495, 580);
+      townCtx.fillText("Take", 265, 620);
+      townCtx.fillText("Give", 495, 620);
       game.previousLocationIndex = game.currentLocationIndex;
       game.currentLocationIndex = helperFunctions.currentLocation(game.map);
       document.getElementById(
@@ -68,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("mousemove", (e) => {
     if (game.map.title.here) {
       if (helperFunctions.myRange(
-        e.clientX, e.clientY, 513, 715, 318, 343
+        e.clientX, e.clientY, 612, 805, 318, 343
       )) {
         singlePlayer.src = "assets/single_player_hover.png";
       } else {
@@ -79,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", (e) => {
     if (game.map.title.here) {
       if (helperFunctions.myRange(
-        e.clientX, e.clientY, 513, 715, 318, 343
+        e.clientX, e.clientY, 612, 805, 318, 343
       )) {
         game.map.title.here = false;
         game.map.town.here = true;
