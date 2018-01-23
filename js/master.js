@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
   singlePlayer.src = "assets/single_player.png";
   const townImage = new Image;
   townImage.src = "assets/townImage.png";
+  const blankBottom = new Image;
+  blankBottom.src = "assets/blankBottom.png";
   const game = {
     albrecht: {
       x: 550,
@@ -35,9 +37,20 @@ document.addEventListener("DOMContentLoaded", () => {
     titleCtx,
     townCtx,
     start: () => {
-      titleCtx.drawImage(titleImage, 0, 1, 680, 180, 250, 0, 680, 180);
-      titleCtx.drawImage(singlePlayer, 500, 300);
-      townCtx.drawImage(townImage, 0, 0);
+      titleCtx.drawImage(titleImage, 0, 1, 680, 180, 370, 0, 680, 180);
+      titleCtx.drawImage(singlePlayer, 600, 300);
+      townCtx.drawImage(townImage, 0, 0, 1200, 645, 0, 0, 1200, 420);
+      townCtx.drawImage(blankBottom, 0, 0, 1200, 325, 0, 420, 1200, 230);
+      townCtx.font = '28px serif';
+      townCtx.fillStyle = "green";
+      townCtx.fillText("Walk To", 245, 500);
+      townCtx.fillText("Talk To", 475, 500);
+      townCtx.fillText("Look At", 245, 540);
+      townCtx.fillText("Swallow", 455, 540);
+      townCtx.fillText("Use", 245, 580);
+      townCtx.fillText("Push", 475, 580);
+      townCtx.fillText("Take", 245, 620);
+      townCtx.fillText("Give", 475, 620);
       game.previousLocationIndex = game.currentLocationIndex;
       game.currentLocationIndex = helperFunctions.currentLocation(game.map);
       document.getElementById(
