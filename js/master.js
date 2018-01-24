@@ -20,14 +20,70 @@ document.addEventListener("DOMContentLoaded", () => {
       y: 300,
     },
     actions: {
-      walk: true,
-      talk: false,
-      look: false,
-      swallow: false,
-      use: false,
-      push: false,
-      take: false,
-      give: false,
+      walk: {
+        selected: true,
+        stringLiteral: "Walk To",
+        xMin: 245,
+        xMax: 345,
+        yMin: 480,
+        yMax: 500,
+      },
+      talk: {
+        selected: false,
+        stringLiteral: "Talk To",
+        xMin: 480,
+        xMax: 580,
+        yMin: 480,
+        yMax: 500,
+      },
+      look: {
+        selected: false,
+        stringLiteral: "Look At",
+        xMin: 245,
+        xMax: 325,
+        yMin: 520,
+        yMax: 540,
+      },
+      swallow: {
+        selected: false,
+        stringLiteral: "Swallow",
+        xMin: 480,
+        xMax: 580,
+        yMin: 520,
+        yMax: 540,
+      },
+      use: {
+        selected: false,
+        stringLiteral: "Use",
+        xMin: 245,
+        xMax: 325,
+        yMin: 560,
+        yMax: 580,
+      },
+      push: {
+        selected: false,
+        stringLiteral: "Push",
+        xMin: 480,
+        xMax: 560,
+        yMin: 560,
+        yMax: 580,
+      },
+      take: {
+        selected: false,
+        stringLiteral: "Take",
+        xMin: 245,
+        xMax: 325,
+        yMin: 600,
+        yMax: 620,
+      },
+      give: {
+        selected: false,
+        stringLiteral: "Give",
+        xMin: 480,
+        xMax: 560,
+        yMin: 600,
+        yMax: 620,
+      },
     },
     locations: [
       "title", "town"
@@ -52,15 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
       townCtx.drawImage(townImage, 0, 0, 1200, 645, 0, 0, 1200, 420);
       townCtx.drawImage(blankBottom, 0, 0, 1200, 325, 0, 420, 1200, 230);
       townCtx.font = '28px serif';
-      townCtx.fillStyle = "green";
-      townCtx.fillText("Walk To", 245, 500);
-      townCtx.fillText("Talk To", 480, 500);
-      townCtx.fillText("Look At", 245, 540);
-      townCtx.fillText("Swallow", 475, 540);
-      townCtx.fillText("Use", 270, 580);
-      townCtx.fillText("Push", 495, 580);
-      townCtx.fillText("Take", 265, 620);
-      townCtx.fillText("Give", 495, 620);
+      helperFunctions.colorActions(game.actions, townCtx);
       game.previousLocationIndex = game.currentLocationIndex;
       game.currentLocationIndex = helperFunctions.currentLocation(game.map);
       document.getElementById(
@@ -94,6 +142,12 @@ document.addEventListener("DOMContentLoaded", () => {
         game.map.title.here = false;
         game.map.town.here = true;
       }
+    }
+    if (game.map.town.here) {
+      var currentAction = helperFunctions.identifyClickedAction(game.actions, e)
+      var previousAction = helperFunctions.currentAction(game.actions);
+      game.actions[previousAction].selected = false;
+      game.actions[currentAction].selected = true;
     }
   });
   step();

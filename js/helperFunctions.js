@@ -18,10 +18,36 @@ export const currentLocation = function(pojo) {
 export const currentAction = function(pojo) {
   let myAction = "walk";
   for (var action in pojo) {
-    if (pojo[action]) {
+    if (pojo[action].selected) {
       return action;
     }
   }
   return myAction;
+}
+
+export const colorActions = function(pojo, canvasContext) {
+  for (var action in pojo) {
+    canvasContext.fillStyle = pojo[action].selected ? "red" : "green";
+    canvasContext.fillText(
+      pojo[action].stringLiteral, pojo[action].xMin, pojo[action].yMax
+    );
+  }
+}
+
+export const identifyClickedAction = function(pojo, e) {
+  for (var action in pojo) {
+    if (
+      myRange(
+        e.clientX,
+        e.clientY,
+        pojo[action].xMin,
+        pojo[action].xMax,
+        pojo[action].yMin,
+        pojo[action].yMax
+      )) {
+        return action;
+      }
+  }
+  return "walk"
 }
 // export const renderCorrectCanvas = function
