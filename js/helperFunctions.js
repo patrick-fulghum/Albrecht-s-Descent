@@ -48,6 +48,12 @@ export const identifyClickedAction = function(pojo, e) {
         return action;
       }
   }
-  return "walk"
+  return "walk";
+}
+
+export const renderItems = function(pojo, canvasContext, itemListing) {
+  for (var slot in pojo) {
+    itemListing[pojo[slot].item]
+  }
 }
 // export const renderCorrectCanvas = function

@@ -14,11 +14,83 @@ document.addEventListener("DOMContentLoaded", () => {
   townImage.src = "assets/townImage.png";
   const blankBottom = new Image;
   blankBottom.src = "assets/blankBottom.png";
+  const ropeImage = new Image;
+  ropeImage.src = "assets/ropeImage.png";
+  rope
   const game = {
     albrecht: {
       x: 550,
       y: 300,
     },
+    items: {
+      slot1: {
+        selected: false,
+        item: "empty",
+        xMin: 680,
+        xMax: 770,
+        yMin: 480,
+        yMax: 540,
+      },
+      slot2: {
+        selected: false,
+        item: "empty",
+        xMin: 797,
+        xMax: 887,
+        yMin: 480,
+        yMax: 540,
+      },
+      slot3: {
+        selected: false,
+        item: "empty",
+        xMin: 918,
+        xMax: 1008,
+        yMin: 480,
+        yMax: 540,
+      },
+      slot4: {
+        selected: false,
+        item: "empty",
+        xMin: 1038,
+        xMax: 1128,
+        yMin: 480,
+        yMax: 540,
+      },      
+      slot5: {
+        selected: false,
+        item: "empty",
+        xMin: 680,
+        xMax: 770,
+        yMin: 555,
+        yMax: 615,
+      },
+      slot6: {
+        selected: false,
+        item: "empty",
+        xMin: 797,
+        xMax: 887,
+        yMin: 555,
+        yMax: 615,
+      },
+      slot7: {
+        selected: false,
+        item: "empty",
+        xMin: 918,
+        xMax: 1008,
+        yMin: 555,
+        yMax: 615,
+      },
+      slot8: {
+        selected: false,
+        item: "empty",
+        xMin: 1038,
+        xMax: 1128,
+        yMin: 555,
+        yMax: 615,
+      },
+    }
+    itemListing: {
+      rope: ropeImage,
+    }
     actions: {
       walk: {
         selected: true,
