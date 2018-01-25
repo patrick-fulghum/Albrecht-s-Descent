@@ -16,16 +16,17 @@ document.addEventListener("DOMContentLoaded", () => {
   blankBottom.src = "assets/blankBottom.png";
   const ropeImage = new Image;
   ropeImage.src = "assets/ropeImage.png";
-  rope
   const game = {
     albrecht: {
-      x: 550,
-      y: 300,
+      xMin: 550,
+      yMin: 300,
+      xMax: 600,
+      yMax: 330,
     },
     items: {
       slot1: {
         selected: false,
-        item: "empty",
+        item: "rope",
         xMin: 680,
         xMax: 770,
         yMin: 480,
@@ -87,10 +88,104 @@ document.addEventListener("DOMContentLoaded", () => {
         yMin: 555,
         yMax: 615,
       },
-    }
+    },
     itemListing: {
       rope: ropeImage,
-    }
+    },
+    enviornment: {
+      town: {
+        fountain: {
+          xMin: 630,
+          yMin: 195,
+          xMax: 695,
+          yMax: 255,
+        },
+        cain: {
+          xMin: 695,
+          yMin: 456,
+          xMax: 720,
+          yMax: 510,
+        },
+        hovelRoof: {
+          xMin: 0,
+          yMin: 120,
+          xMax: 313,
+          yMax: 220,
+        },
+        hovelDoor: {
+          xMin: 150,
+          yMin: 220,
+          xMax: 200,
+          yMax: 270,
+        },
+        hovel: {
+          xMin: 0,
+          yMin: 220,
+          xMax: 120,
+          yMax: 290,
+        },
+        smallRock: {
+          xMin: 303,
+          yMin: 270,
+          xMax: 355,
+          yMax: 298,      
+        },
+        largeRock: {
+          xMin: 390,
+          yMin: 130,
+          xMax: 500,
+          yMax: 180,
+        },
+        tavern: {
+          xMin: 800,
+          yMin: 0,
+          xMax: 923,
+          yMax: 60,
+        },
+        ogden: {
+          xMin: 725,
+          yMin: 220,
+          xMax: 800,
+          yMax: 70,
+        },
+        pepin: {
+          xMin: 120,
+          yMin: 220,
+          xMax: 150,
+          yMax: 280,
+        },
+        griswold: {
+          xMin: 930,
+          yMin: 110,
+          xMax: 1029,
+          yMax: 180,
+        },
+        blacksmith: {
+          xMin: 1029,
+          yMin: 60,
+          xMax: 1200,
+          yMax: 195,
+        },
+        cathedral: {
+          xMin: 923,
+          yMin: 0,
+          xMax: 1029,
+          yMax: 60,
+        },
+        cabin: {
+          xMin: 500,
+          yMin: 320,
+          xMax: 825,
+          yMax: 420,
+        },
+        house: {
+          xMin: 956,
+          yMin: 253,
+          xMax: 1200,
+          yMax: 420,
+        },
+      },
+    },
     actions: {
       walk: {
         selected: true,
@@ -181,6 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
       townCtx.drawImage(blankBottom, 0, 0, 1200, 325, 0, 420, 1200, 230);
       townCtx.font = '28px serif';
       helperFunctions.colorActions(game.actions, townCtx);
+      helperFunctions.renderItems(game.items, townCtx, game.itemListing);
       game.previousLocationIndex = game.currentLocationIndex;
       game.currentLocationIndex = helperFunctions.currentLocation(game.map);
       document.getElementById(
