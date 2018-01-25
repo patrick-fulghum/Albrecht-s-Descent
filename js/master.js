@@ -16,12 +16,16 @@ document.addEventListener("DOMContentLoaded", () => {
   blankBottom.src = "assets/blankBottom.png";
   const ropeImage = new Image;
   ropeImage.src = "assets/ropeImage.png";
+  const blackBackground = new Image;
+  blackBackground.src = "assets/blackBackground.png";
   const game = {
     albrecht: {
-      xMin: 550,
-      yMin: 300,
-      xMax: 600,
-      yMax: 330,
+      slope: 1,
+      moving: false,
+      xMin: 560,
+      yMin: 220,
+      xMax: 603,
+      yMax: 245,
     },
     items: {
       slot1: {
@@ -92,97 +96,139 @@ document.addEventListener("DOMContentLoaded", () => {
     itemListing: {
       rope: ropeImage,
     },
+    subject: "",
+    objective: "",
     enviornment: {
       town: {
         fountain: {
+          name: "the Fountain",
+          static: true,
           xMin: 630,
           yMin: 195,
           xMax: 695,
           yMax: 255,
         },
         cain: {
+          name: "Deckard Cain, the Elder",
+          static: true,
           xMin: 695,
-          yMin: 456,
+          yMin: 240,
           xMax: 720,
-          yMax: 510,
+          yMax: 270,
         },
         hovelRoof: {
+          name: "the Hovel",
+          static: true,
           xMin: 0,
           yMin: 120,
           xMax: 313,
           yMax: 220,
         },
         hovelDoor: {
+          name: "the Hovel",
+          static: true,
           xMin: 150,
           yMin: 220,
           xMax: 200,
           yMax: 270,
         },
         hovel: {
+          name: "the Hovel",
+          static: true,
           xMin: 0,
           yMin: 220,
           xMax: 120,
           yMax: 290,
         },
         smallRock: {
+          name: "Rock",
+          static: true,
           xMin: 303,
           yMin: 270,
           xMax: 355,
           yMax: 298,      
         },
         largeRock: {
+          name: "Rock",
+          static: true,
           xMin: 390,
           yMin: 130,
           xMax: 500,
           yMax: 180,
         },
         tavern: {
+          tavern: "the Tavern",
+          static: true,
           xMin: 800,
           yMin: 0,
           xMax: 923,
           yMax: 60,
         },
         ogden: {
+          name: "Ogden, the Tavern Owner",
+          static: true,
           xMin: 725,
-          yMin: 220,
+          yMin: 20,
           xMax: 800,
           yMax: 70,
         },
         pepin: {
+          name: "Pepin, the Priest",
+          static: true,
           xMin: 120,
           yMin: 220,
           xMax: 150,
           yMax: 280,
         },
         griswold: {
+          name: "Griswold, the Blacksmith",
+          static: true,
           xMin: 930,
           yMin: 110,
           xMax: 1029,
           yMax: 180,
         },
         blacksmith: {
+          name: "Blacksmith",
+          static: true,
           xMin: 1029,
           yMin: 60,
           xMax: 1200,
           yMax: 195,
         },
         cathedral: {
+          name: "the Cathedral",
+          static: true,
           xMin: 923,
           yMin: 0,
           xMax: 1029,
           yMax: 60,
         },
         cabin: {
+          name: "the Cabin",
+          static: true,
           xMin: 500,
           yMin: 320,
           xMax: 825,
           yMax: 420,
         },
         house: {
+          name: "the House",
+          static: true,
           xMin: 956,
           yMin: 253,
           xMax: 1200,
           yMax: 420,
+        },
+        rope: {
+          name: "the Rope",
+          static: false,
+          presence: true,
+          image: ropeImage,
+          xMin: 0,
+          yMin: 0,
+          xMax: 100,
+          yMax: 100,
         },
       },
     },
@@ -190,64 +236,64 @@ document.addEventListener("DOMContentLoaded", () => {
       walk: {
         selected: true,
         stringLiteral: "Walk To",
-        xMin: 245,
-        xMax: 345,
+        xMin: 230,
+        xMax: 350,
         yMin: 480,
         yMax: 500,
       },
       talk: {
         selected: false,
         stringLiteral: "Talk To",
-        xMin: 480,
-        xMax: 580,
+        xMin: 450,
+        xMax: 590,
         yMin: 480,
         yMax: 500,
       },
       look: {
         selected: false,
         stringLiteral: "Look At",
-        xMin: 245,
-        xMax: 325,
+        xMin: 230,
+        xMax: 350,
         yMin: 520,
         yMax: 540,
       },
       swallow: {
         selected: false,
         stringLiteral: "Swallow",
-        xMin: 480,
-        xMax: 580,
+        xMin: 450,
+        xMax: 590,
         yMin: 520,
         yMax: 540,
       },
       use: {
         selected: false,
         stringLiteral: "Use",
-        xMin: 245,
-        xMax: 325,
+        xMin: 230,
+        xMax: 350,
         yMin: 560,
         yMax: 580,
       },
       push: {
         selected: false,
         stringLiteral: "Push",
-        xMin: 480,
-        xMax: 560,
+        xMin: 450,
+        xMax: 590,
         yMin: 560,
         yMax: 580,
       },
       take: {
         selected: false,
         stringLiteral: "Take",
-        xMin: 245,
-        xMax: 325,
+        xMin: 230,
+        xMax: 350,
         yMin: 600,
         yMax: 620,
       },
       give: {
         selected: false,
         stringLiteral: "Give",
-        xMin: 480,
-        xMax: 560,
+        xMin: 450,
+        xMax: 590,
         yMin: 600,
         yMax: 620,
       },
@@ -265,6 +311,23 @@ document.addEventListener("DOMContentLoaded", () => {
         index: 1,
       },
     },
+    slowTime: 0,
+    moveAlbrecht: () => {
+      game.slowTime += 1;
+      if (game["albrecht"].moving && game.slowTime % 10 === 0) {
+        game["albrecht"].xMin += (1 / game["albrecht"].slope);
+        game["albrecht"].xMax += (1 / game["albrecht"].slope);
+        game["albrecht"].yMin += (1 * game["albrecht"].slope);
+        game["albrecht"].yMax += (1 * game["albrecht"].slope);
+        if (helperFunctions.detectBodyCollision(game["albrecht"], game["enviornment"]["town"])) {
+          game["albrecht"].xMin -= (1 / game["albrecht"].slope);
+          game["albrecht"].xMax -= (1 / game["albrecht"].slope);
+          game["albrecht"].yMin -= (1 * game["albrecht"].slope);
+          game["albrecht"].yMax -= (1 * game["albrecht"].slope);
+          game["albrecht"].moving = false
+        }
+      }
+    },
     currentLocationIndex: 0,
     previousLocationIndex: 0,
     titleCtx,
@@ -274,9 +337,11 @@ document.addEventListener("DOMContentLoaded", () => {
       titleCtx.drawImage(singlePlayer, 600, 300);
       townCtx.drawImage(townImage, 0, 0, 1200, 645, 0, 0, 1200, 420);
       townCtx.drawImage(blankBottom, 0, 0, 1200, 325, 0, 420, 1200, 230);
-      townCtx.font = '28px serif';
+      townCtx.drawImage(blackBackground, game["albrecht"].xMin, game["albrecht"].yMin);
+      game.moveAlbrecht();
       helperFunctions.colorActions(game.actions, townCtx);
       helperFunctions.renderItems(game.items, townCtx, game.itemListing);
+      helperFunctions.writeSentence(game, townCtx);
       game.previousLocationIndex = game.currentLocationIndex;
       game.currentLocationIndex = helperFunctions.currentLocation(game.map);
       document.getElementById(
@@ -300,6 +365,8 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         singlePlayer.src = "assets/single_player.png";
       }
+    } else if (game.map.town.here) {
+      game.objective = helperFunctions.detectHoverCollision(e, game["enviornment"]["town"]);
     }
   });
   document.addEventListener("click", (e) => {
@@ -316,6 +383,15 @@ document.addEventListener("DOMContentLoaded", () => {
       var previousAction = helperFunctions.currentAction(game.actions);
       game.actions[previousAction].selected = false;
       game.actions[currentAction].selected = true;
+      if (currentAction === "walk") {
+        game["albrecht"].moving = true;
+        game["albrecht"].slope = helperFunctions.slope(
+          game["albrecht"].xMin,
+          game["albrecht"].yMin,
+          e.clientX,
+          e.clientY
+        )
+      }
     }
   });
   step();
