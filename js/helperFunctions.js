@@ -126,12 +126,36 @@ export const writeSentence = function(gameObject, canvasContext) {
   )
 };
 
-export const slope = function(x1, y1, x2, y2) {
-  var slope = (y2 - y1) / (x2 - x1);
-  if (slope > 10 || slope < -10) {
-    var slope = 10;
-  } else if (slope < 0.1 && slope > -0.1) {
-    var slope = 0.1;
+export const moveCalc = function(x1, y1, x2, y2) {
+  var myUp;
+  var myRight;
+  var slope = (y1 - y2) / (x2 - x1);
+  if (slope > 2) {
+    slope = 2;
+  } else if (slope < -2) {
+    slope = -2;
+  } else if (slope < 0 && slope > -0.5) {
+    slope = -0.5;
+  } else if (slope < 0.5 && slope >= 0) {
+    slope = 0.5;
   }
-  return slope;
+  if (x1 > x2) {
+    myRight = -1;
+  } else {
+    myRight = 1;
+  }
+  if (y1 > y2) {
+    myUp = -1;
+  } else {
+    myUp = 1;
+  }
+  return [slope, myUp, myRight];
 }
+
+export const handleX = function(array) {
+  return (1 / (Math.pow(Math.pow(array[0], 2), 0.5)) * array[2]);
+};
+
+export const handleY = function(array) {
+  return (Math.pow(Math.pow(array[0], 2), 0.5) * array[1]);
+};

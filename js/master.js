@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   blackBackground.src = "assets/blackBackground.png";
   const game = {
     albrecht: {
-      slope: 1,
+      moves: [],
       moving: false,
       xMin: 560,
       yMin: 220,
@@ -314,16 +314,16 @@ document.addEventListener("DOMContentLoaded", () => {
     slowTime: 0,
     moveAlbrecht: () => {
       game.slowTime += 1;
-      if (game["albrecht"].moving && game.slowTime % 10 === 0) {
-        game["albrecht"].xMin += (1 / game["albrecht"].slope);
-        game["albrecht"].xMax += (1 / game["albrecht"].slope);
-        game["albrecht"].yMin += (1 * game["albrecht"].slope);
-        game["albrecht"].yMax += (1 * game["albrecht"].slope);
+      if (game["albrecht"].moving && game.slowTime % 4 === 0) {
+        game["albrecht"].xMin += helperFunctions.handleX(game["albrecht"].moves);
+        game["albrecht"].xMax += helperFunctions.handleX(game["albrecht"].moves);
+        game["albrecht"].yMin += helperFunctions.handleY(game["albrecht"].moves);
+        game["albrecht"].yMax += helperFunctions.handleY(game["albrecht"].moves);
         if (helperFunctions.detectBodyCollision(game["albrecht"], game["enviornment"]["town"])) {
-          game["albrecht"].xMin -= (1 / game["albrecht"].slope);
-          game["albrecht"].xMax -= (1 / game["albrecht"].slope);
-          game["albrecht"].yMin -= (1 * game["albrecht"].slope);
-          game["albrecht"].yMax -= (1 * game["albrecht"].slope);
+          game["albrecht"].xMin -= helperFunctions.handleX(game["albrecht"].moves);
+          game["albrecht"].xMax -= helperFunctions.handleX(game["albrecht"].moves);
+          game["albrecht"].yMin -= helperFunctions.handleY(game["albrecht"].moves);
+          game["albrecht"].yMax -= helperFunctions.handleY(game["albrecht"].moves);
           game["albrecht"].moving = false
         }
       }
@@ -385,12 +385,13 @@ document.addEventListener("DOMContentLoaded", () => {
       game.actions[currentAction].selected = true;
       if (currentAction === "walk") {
         game["albrecht"].moving = true;
-        game["albrecht"].slope = helperFunctions.slope(
+        game["albrecht"].moves = helperFunctions.moveCalc(
           game["albrecht"].xMin,
           game["albrecht"].yMin,
           e.clientX,
           e.clientY
-        )
+        );
+        console.log(game["albrecht"].moves);
       }
     }
   });
