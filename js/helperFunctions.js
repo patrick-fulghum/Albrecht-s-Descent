@@ -83,17 +83,17 @@ export const constructSentence = function(verb, subject, objective) {
   }
 };
 
-export const detectBodyCollision = function(playerObject, particularEnviornment) {
-  for (var object in particularEnviornment) {
+export const detectBodyCollision = function(playerObject, particularEnvironment) {
+  for (var object in particularEnvironment) {
     if (bodyCollision(
       playerObject.xMin,
       playerObject.yMin,
       playerObject.xMax,
       playerObject.yMax,
-      particularEnviornment[object].xMin,
-      particularEnviornment[object].yMin,
-      particularEnviornment[object].xMax,
-      particularEnviornment[object].yMax,
+      particularEnvironment[object].xMin,
+      particularEnvironment[object].yMin,
+      particularEnvironment[object].xMax,
+      particularEnvironment[object].yMax,
   )) {
     return object;
     }
@@ -158,4 +158,17 @@ export const handleX = function(array) {
 
 export const handleY = function(array) {
   return (Math.pow(Math.pow(array[0], 2), 0.5) * array[1]);
+};
+
+export const currentSpeaker = function(pojo) {
+  for (var speaker in pojo) {
+    if (pojo[speaker].speaking) {
+      return speaker;
+    }
+  }
+};
+
+export const renderSpeaker = function(pojo, context) {
+  var thisSpeaker = currentSpeaker(pojo);
+  context.drawImage(pojo[thisSpeaker].image, 30, 470);
 };

@@ -18,6 +18,16 @@ document.addEventListener("DOMContentLoaded", () => {
   ropeImage.src = "assets/ropeImage.png";
   const blackBackground = new Image;
   blackBackground.src = "assets/blackBackground.png";
+  const pepinPortrait = new Image;
+  pepinPortrait.src = "assets/pepin_Portrait.png";
+  const ogdenPortrait = new Image;
+  ogdenPortrait.src = "assets/ogden_Portrait.png";
+  const cainPortrait = new Image;
+  cainPortrait.src = "assets/Cain_Portrait.png"
+  const albrechtPortrait = new Image;
+  albrechtPortrait.src = "assets/albrecht_Portrait.png";
+  const griswoldPortrait = new Image;
+  griswoldPortrait.src = "assets/griswold_Portrait.png";
   const game = {
     albrecht: {
       moves: [],
@@ -96,9 +106,31 @@ document.addEventListener("DOMContentLoaded", () => {
     itemListing: {
       rope: ropeImage,
     },
+    speakers: {
+      albrecht: {
+        speaking: true,
+        image: albrechtPortrait,
+      },
+      pepin: {
+        speaking: false,
+        image: pepinPortrait,
+      },
+      cain: {
+        speaking: false,
+        image: cainPortrait,
+      },
+      griswold: {
+        speaking: false,
+        image: griswoldPortrait,
+      },
+      ogden: {
+        speaking: false,
+        image: ogdenPortrait,
+      },
+    },
     subject: "",
     objective: "",
-    enviornment: {
+    environment: {
       town: {
         fountain: {
           name: "the Fountain",
@@ -319,7 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
         game["albrecht"].xMax += helperFunctions.handleX(game["albrecht"].moves);
         game["albrecht"].yMin += helperFunctions.handleY(game["albrecht"].moves);
         game["albrecht"].yMax += helperFunctions.handleY(game["albrecht"].moves);
-        if (helperFunctions.detectBodyCollision(game["albrecht"], game["enviornment"]["town"])) {
+        if (helperFunctions.detectBodyCollision(game["albrecht"], game["environment"]["town"])) {
           game["albrecht"].xMin -= helperFunctions.handleX(game["albrecht"].moves);
           game["albrecht"].xMax -= helperFunctions.handleX(game["albrecht"].moves);
           game["albrecht"].yMin -= helperFunctions.handleY(game["albrecht"].moves);
@@ -339,6 +371,7 @@ document.addEventListener("DOMContentLoaded", () => {
       townCtx.drawImage(blankBottom, 0, 0, 1200, 325, 0, 420, 1200, 230);
       townCtx.drawImage(blackBackground, game["albrecht"].xMin, game["albrecht"].yMin);
       game.moveAlbrecht();
+      helperFunctions.renderSpeaker(game.speakers, townCtx);
       helperFunctions.colorActions(game.actions, townCtx);
       helperFunctions.renderItems(game.items, townCtx, game.itemListing);
       helperFunctions.writeSentence(game, townCtx);
@@ -366,7 +399,7 @@ document.addEventListener("DOMContentLoaded", () => {
         singlePlayer.src = "assets/single_player.png";
       }
     } else if (game.map.town.here) {
-      game.objective = helperFunctions.detectHoverCollision(e, game["enviornment"]["town"]);
+      game.objective = helperFunctions.detectHoverCollision(e, game["environment"]["town"]);
     }
   });
   document.addEventListener("click", (e) => {
