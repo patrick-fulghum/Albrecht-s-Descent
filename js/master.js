@@ -28,6 +28,10 @@ document.addEventListener("DOMContentLoaded", () => {
   albrechtPortrait.src = "assets/albrecht_Portrait.png";
   const griswoldPortrait = new Image;
   griswoldPortrait.src = "assets/griswold_Portrait.png";
+  const hudImage = new Image;
+  hudImage.src = "assets/hudImage.png";
+  const dialogBox = new Image;
+  dialogBox.src = "assets/Empty_Dialog_Box.png";
   const game = {
     albrecht: {
       moves: [],
@@ -40,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     items: {
       slot1: {
         selected: false,
-        item: "rope",
+        item: "empty",
         xMin: 680,
         xMax: 770,
         yMin: 480,
@@ -108,11 +112,11 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     speakers: {
       albrecht: {
-        speaking: true,
+        speaking: false,
         image: albrechtPortrait,
       },
       pepin: {
-        speaking: false,
+        speaking: true,
         image: pepinPortrait,
       },
       cain: {
@@ -126,6 +130,9 @@ document.addEventListener("DOMContentLoaded", () => {
       ogden: {
         speaking: false,
         image: ogdenPortrait,
+      },
+      dialogBox: {
+        image: dialogBox,
       },
     },
     subject: "",
@@ -265,6 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     },
     actions: {
+      renderActions: false,
       walk: {
         selected: true,
         stringLiteral: "Walk To",
@@ -367,6 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
     start: () => {
       titleCtx.drawImage(titleImage, 0, 1, 680, 180, 370, 0, 680, 180);
       titleCtx.drawImage(singlePlayer, 600, 300);
+      titleCtx.drawImage(hudImage, 5, 5, 611, 135, 373, 463, 611, 135);
       townCtx.drawImage(townImage, 0, 0, 1200, 645, 0, 0, 1200, 420);
       townCtx.drawImage(blankBottom, 0, 0, 1200, 325, 0, 420, 1200, 230);
       townCtx.drawImage(blackBackground, game["albrecht"].xMin, game["albrecht"].yMin);

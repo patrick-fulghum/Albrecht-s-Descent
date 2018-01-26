@@ -35,12 +35,14 @@ export const currentAction = function(pojo) {
 };
 
 export const colorActions = function(pojo, canvasContext) {
-  canvasContext.font = "28px serif";
-  for (var action in pojo) {
-    canvasContext.fillStyle = pojo[action].selected ? "red" : "green";
-    canvasContext.fillText(
-      pojo[action].stringLiteral, pojo[action].xMin, pojo[action].yMax
-    );
+  if (pojo.renderActions) {
+    canvasContext.font = "28px serif";
+    for (var action in pojo) {
+      canvasContext.fillStyle = pojo[action].selected ? "red" : "green";
+      canvasContext.fillText(
+        pojo[action].stringLiteral, pojo[action].xMin, pojo[action].yMax
+      );
+    }
   }
 };
 
@@ -171,4 +173,7 @@ export const currentSpeaker = function(pojo) {
 export const renderSpeaker = function(pojo, context) {
   var thisSpeaker = currentSpeaker(pojo);
   context.drawImage(pojo[thisSpeaker].image, 30, 470);
+  if (thisSpeaker !== "albrecht") {
+    context.drawImage(pojo["dialogBox"].image, 197, 455);
+  }
 };
