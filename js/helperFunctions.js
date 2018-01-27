@@ -25,7 +25,7 @@ export const currentLocation = function(pojo) {
 };
 
 export const currentAction = function(pojo) {
-  let myAction = "walk";
+  let myAction;
   for (var action in pojo) {
     if (pojo[action].selected) {
       return action;
@@ -60,7 +60,7 @@ export const identifyClickedAction = function(pojo, e) {
         return action;
       }
   }
-  return "walk";
+  return "";
 };
 
 export const renderItems = function(pojo, canvasContext, itemListing) {
@@ -95,7 +95,7 @@ export const detectBodyCollision = function(playerObject, particularEnvironment)
       particularEnvironment[object].xMin,
       particularEnvironment[object].yMin,
       particularEnvironment[object].xMax,
-      particularEnvironment[object].yMax,
+      particularEnvironment[object].yMax
   )) {
     return object;
     }
@@ -114,7 +114,7 @@ export const detectHoverCollision = function(e, env) {
     }
   }
   return "";
-}
+};
 
 export const writeSentence = function(gameObject, canvasContext) {
   var thisAction = currentAction(gameObject['actions']);
@@ -124,8 +124,8 @@ export const writeSentence = function(gameObject, canvasContext) {
       gameObject["actions"][thisAction].stringLiteral,
       gameObject["subject"],
       gameObject["objective"]
-    ), 330, 440 
-  )
+    ), 330, 440
+  );
 };
 
 export const moveCalc = function(x1, y1, x2, y2) {
@@ -152,7 +152,7 @@ export const moveCalc = function(x1, y1, x2, y2) {
     myUp = 1;
   }
   return [slope, myUp, myRight];
-}
+};
 
 export const handleX = function(array) {
   return (1 / (Math.pow(Math.pow(array[0], 2), 0.5)) * array[2]);
@@ -176,4 +176,34 @@ export const renderSpeaker = function(pojo, context) {
   if (thisSpeaker !== "albrecht") {
     context.drawImage(pojo["dialogBox"].image, 197, 455);
   }
+};
+
+export const actionInitiation = function(body1, body2) {
+  return bodyCollision(
+    body1.xMin - 20,
+    body1.yMin - 20,
+    body1.xMax + 20,
+    body1.yMax + 20,
+    body2.xMin - 20,
+    body2.yMin - 20,
+    body2.xMax + 20,
+    body2.yMax + 20
+  );
+};
+
+export const checkSpeakers = function(gameObject) {
+  let validSpeakers = ["albrecht"];
+  let thisLocation = gameObject["locations"][currentLocation(gameObject["map"])];
+  for (var speaker in gameObject["speakers"]) {
+    if (gameObject["speakers"][speaker].location === thisLocation) {
+      if (actionInitiation(
+        gameObject["albrecht"],
+        gameObject["environment"][thisLocation][speaker]
+      ))
+      {
+        validSpeakers[0] = speaker;
+      }
+    }
+  }
+  return validSpeakers;
 };

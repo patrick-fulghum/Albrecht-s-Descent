@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const ogdenPortrait = new Image;
   ogdenPortrait.src = "assets/ogden_Portrait.png";
   const cainPortrait = new Image;
-  cainPortrait.src = "assets/Cain_Portrait.png"
+  cainPortrait.src = "assets/Cain_Portrait.png";
   const albrechtPortrait = new Image;
   albrechtPortrait.src = "assets/albrecht_Portrait.png";
   const griswoldPortrait = new Image;
@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
         xMax: 1128,
         yMin: 480,
         yMax: 540,
-      },      
+      },
       slot5: {
         selected: false,
         item: "empty",
@@ -112,24 +112,54 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     speakers: {
       albrecht: {
-        speaking: false,
+        speaking: true,
         image: albrechtPortrait,
+        responses: {
+          cainOne: [
+            "I had a dream that my mother was in the Cathedral.",
+            "That is no business of yours, Cain."
+          ],
+          cainTwo: [
+            "Why do people call my father, the Mad King?",
+            "I could have your tongue removed for speaking in such a way.",
+            "Have you seen my mother, the Queen Asylla?"
+          ]
+        },
       },
       pepin: {
-        speaking: true,
+        speaking: false,
         image: pepinPortrait,
+        location: "town",
+        responses: {
+          open: "Welcome to Tristam, Prince Albecht. Let me know if there"
+          + "is anything I can do to be of assistance.",
+        },
       },
       cain: {
         speaking: false,
         image: cainPortrait,
+        location: "town",
+        responses: {
+          open: "Prince Albrecht, we weren’t expecting you down from" +
+          "your father’s manor. What brings you to Tristram?",
+        }
       },
       griswold: {
         speaking: false,
         image: griswoldPortrait,
+        location: "town",
+        responses: {
+          open: "Welcome to my Smithy, Prince. What can I do for you?",
+        }
       },
       ogden: {
         speaking: false,
         image: ogdenPortrait,
+        location: "town",
+        responses: {
+          open: "Ahh! Good Prince Albrecht, you are a little young to" +
+          "be drinking at my tavern boy."
+        }
       },
       dialogBox: {
         image: dialogBox,
@@ -185,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
           xMin: 303,
           yMin: 270,
           xMax: 355,
-          yMax: 298,      
+          yMax: 298,
         },
         largeRock: {
           name: "Rock",
@@ -196,7 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
           yMax: 180,
         },
         tavern: {
-          tavern: "the Tavern",
+          name: "the Tavern",
           static: true,
           xMin: 800,
           yMin: 0,
@@ -272,7 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     },
     actions: {
-      renderActions: false,
+      renderActions: true,
       walk: {
         selected: true,
         stringLiteral: "Walk To",
@@ -341,6 +371,10 @@ document.addEventListener("DOMContentLoaded", () => {
     locations: [
       "title", "town"
     ],
+    contexts: [
+      titleCtx, townCtx
+    ],
+    validSpeakers: [],
     map: {
       title: {
         here: true,
@@ -364,7 +398,7 @@ document.addEventListener("DOMContentLoaded", () => {
           game["albrecht"].xMax -= helperFunctions.handleX(game["albrecht"].moves);
           game["albrecht"].yMin -= helperFunctions.handleY(game["albrecht"].moves);
           game["albrecht"].yMax -= helperFunctions.handleY(game["albrecht"].moves);
-          game["albrecht"].moving = false
+          game["albrecht"].moving = false;
         }
       }
     },
@@ -378,8 +412,12 @@ document.addEventListener("DOMContentLoaded", () => {
       titleCtx.drawImage(hudImage, 5, 5, 611, 135, 373, 463, 611, 135);
       townCtx.drawImage(townImage, 0, 0, 1200, 645, 0, 0, 1200, 420);
       townCtx.drawImage(blankBottom, 0, 0, 1200, 325, 0, 420, 1200, 230);
-      townCtx.drawImage(blackBackground, game["albrecht"].xMin, game["albrecht"].yMin);
+      townCtx.drawImage(
+        blackBackground, game["albrecht"].xMin, game["albrecht"].yMin
+      );
       game.moveAlbrecht();
+      game["actions"].renderActions =
+      helperFunctions.currentSpeaker(game.speakers) === "albrecht";
       helperFunctions.renderSpeaker(game.speakers, townCtx);
       helperFunctions.colorActions(game.actions, townCtx);
       helperFunctions.renderItems(game.items, townCtx, game.itemListing);
@@ -421,8 +459,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     if (game.map.town.here) {
-      var currentAction = helperFunctions.identifyClickedAction(game.actions, e)
+      var currentAction = helperFunctions.identifyClickedAction(game.actions, e);
       var previousAction = helperFunctions.currentAction(game.actions);
+      if (currentAction === "") {
+        currentAction = previousAction;
+      }
       game.actions[previousAction].selected = false;
       game.actions[currentAction].selected = true;
       if (currentAction === "walk") {
@@ -433,7 +474,13 @@ document.addEventListener("DOMContentLoaded", () => {
           e.clientX,
           e.clientY
         );
-        console.log(game["albrecht"].moves);
+      }
+      if (currentAction === "talk") {
+        game.validSpeakers = helperFunctions.checkSpeakers(game);
+        if (game["environment"]["town"][game.validSpeakers[0]].name === game.objective) {
+          game["speakers"]["albrecht"].speaking = false;
+          game["speakers"][game.validSpeakers[0]].speaking = true;
+        }
       }
     }
   });
