@@ -207,3 +207,32 @@ export const checkSpeakers = function(gameObject) {
   }
   return validSpeakers;
 };
+
+export const writeDialog = function(game, canvasContext, indice) {
+  var temp = canvasContext.font;
+  var temp2 = canvasContext.fillStyle;
+  canvasContext.font = "22px serif";
+  canvasContext.fillStyle = "white";
+  if (
+    game.validSpeakers[0] &&
+    game["speakers"][game.validSpeakers[0]].speaking
+    ) {
+    var sentence =
+    game["speakers"][game.validSpeakers[0]].responses.open.slice(0, indice);
+    var sentenceArray = ["","",""];
+    let i = 0;
+    let j = 0;
+    while (i < sentence.length) {
+      if (Math.floor(i / 75) > j && (sentence[i] === " ")) {
+        j += 1;
+      }
+      sentenceArray[j] += (sentence[i]);
+      i += 1;
+    }
+    canvasContext.fillText(sentenceArray[0], 273, 505);
+    canvasContext.fillText(sentenceArray[1], 273, 535);
+    canvasContext.fillText(sentenceArray[2], 273, 565);
+  }
+  canvasContext.font = temp;
+  canvasContext.fillStyle = temp2;
+};

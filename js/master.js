@@ -36,9 +36,9 @@ document.addEventListener("DOMContentLoaded", () => {
     albrecht: {
       moves: [],
       moving: false,
-      xMin: 560,
+      xMin: 727,
       yMin: 220,
-      xMax: 603,
+      xMax: 772,
       yMax: 245,
     },
     items: {
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
         location: "town",
         responses: {
           open: "Prince Albrecht, we weren’t expecting you down from" +
-          "your father’s manor. What brings you to Tristram?",
+          " your father’s manor. What brings you to Tristram?",
         }
       },
       griswold: {
@@ -386,6 +386,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     },
     slowTime: 0,
+    scrollingText: 0,
     moveAlbrecht: () => {
       game.slowTime += 1;
       if (game["albrecht"].moving && game.slowTime % 4 === 0) {
@@ -422,6 +423,7 @@ document.addEventListener("DOMContentLoaded", () => {
       helperFunctions.colorActions(game.actions, townCtx);
       helperFunctions.renderItems(game.items, townCtx, game.itemListing);
       helperFunctions.writeSentence(game, townCtx);
+      helperFunctions.writeDialog(game, townCtx, game.scrollingText);
       game.previousLocationIndex = game.currentLocationIndex;
       game.currentLocationIndex = helperFunctions.currentLocation(game.map);
       document.getElementById(
@@ -430,6 +432,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById(
           game.locations[game.previousLocationIndex]
         ).style.zIndex) + 1;
+      game.scrollingText += 1;
     },
   };
   const step = () => {
@@ -477,9 +480,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       if (currentAction === "talk") {
         game.validSpeakers = helperFunctions.checkSpeakers(game);
-        if (game["environment"]["town"][game.validSpeakers[0]].name === game.objective) {
+        if (
+          game.validSpeakers !== "albrecht" &&
+          game["environment"]["town"][game.validSpeakers[0]].name === game.objective
+        ) {
           game["speakers"]["albrecht"].speaking = false;
           game["speakers"][game.validSpeakers[0]].speaking = true;
+          game.scrollingText = 0;
         }
       }
     }
