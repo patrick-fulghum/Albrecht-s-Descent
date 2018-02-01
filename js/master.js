@@ -111,19 +111,38 @@ document.addEventListener("DOMContentLoaded", () => {
       rope: ropeImage,
     },
     speakers: {
+      responding: {
+        speaking: false,
+        image: albrechtPortrait,
+      },
       albrecht: {
         speaking: true,
         image: albrechtPortrait,
         responses: {
-          cainOne: [
-            "I had a dream that my mother was in the Cathedral.",
-            "That is no business of yours, Cain."
-          ],
-          cainTwo: [
-            "Why do people call my father, the Mad King?",
-            "I could have your tongue removed for speaking in such a way.",
-            "Have you seen my mother, the Queen Asylla?"
-          ]
+          cain: {
+            1: [
+              " > I had a dream that my mother was in the Cathedral.",
+              " > That is no business of yours, Cain.",
+              " > I must go."
+            ],
+            2: [
+              " > Why do people call my father, the Mad King?",
+              " > I could have your tongue removed for speaking in such a way.",
+              " > Have you seen my mother, the Queen Asylla?",
+              " > I must go."
+            ]
+          },
+          pepin: {
+            1: [
+              " > I had a dream that my mother was in the Cathedral.",
+              " > Goodbye."
+            ],
+            2: [
+              " > Why is Chess the greatest game of all time?",
+              " > Why do people seem to fear the cathedral?",
+              " > Goodbye."
+            ]
+          }
         },
       },
       pepin: {
@@ -131,8 +150,8 @@ document.addEventListener("DOMContentLoaded", () => {
         image: pepinPortrait,
         location: "town",
         responses: {
-          open: "Welcome to Tristam, Prince Albecht. Let me know if there"
-          + "is anything I can do to be of assistance.",
+          open: "Pepin: 'Welcome to Tristam, Prince Albecht. Let me know if there"
+          + "is anything I can do to be of assistance.'",
         },
       },
       cain: {
@@ -140,8 +159,8 @@ document.addEventListener("DOMContentLoaded", () => {
         image: cainPortrait,
         location: "town",
         responses: {
-          open: "Prince Albrecht, we weren’t expecting you down from" +
-          " your father’s manor. What brings you to Tristram?",
+          open: "Cain: 'Prince Albrecht, we weren’t expecting you down from" +
+          " your father’s manor. What brings you to Tristram?'",
         }
       },
       griswold: {
@@ -149,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
         image: griswoldPortrait,
         location: "town",
         responses: {
-          open: "Welcome to my Smithy, Prince. What can I do for you?",
+          open: "Griswold: 'Welcome to my Smithy, Prince. What can I do for you?'",
         }
       },
       ogden: {
@@ -157,8 +176,8 @@ document.addEventListener("DOMContentLoaded", () => {
         image: ogdenPortrait,
         location: "town",
         responses: {
-          open: "Ahh! Good Prince Albrecht, you are a little young to" +
-          "be drinking at my tavern boy."
+          open: "Ogden: 'Ahh! Good Prince Albrecht, you are a little young to" +
+          "be drinking at my tavern boy?'"
         }
       },
       dialogBox: {
@@ -387,6 +406,10 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     slowTime: 0,
     scrollingText: 0,
+    dialogDepth: 0,
+    hoveredResponse: [false, false, false, false],
+    selectedResponse: 1,
+    previousSpeaker: "",
     moveAlbrecht: () => {
       game.slowTime += 1;
       if (game["albrecht"].moving && game.slowTime % 4 === 0) {
@@ -423,7 +446,8 @@ document.addEventListener("DOMContentLoaded", () => {
       helperFunctions.colorActions(game.actions, townCtx);
       helperFunctions.renderItems(game.items, townCtx, game.itemListing);
       helperFunctions.writeSentence(game, townCtx);
-      helperFunctions.writeDialog(game, townCtx, game.scrollingText);
+      helperFunctions.writeDialog(game, townCtx,
+        (Math.floor(game.scrollingText)));
       game.previousLocationIndex = game.currentLocationIndex;
       game.currentLocationIndex = helperFunctions.currentLocation(game.map);
       document.getElementById(
@@ -433,6 +457,9 @@ document.addEventListener("DOMContentLoaded", () => {
           game.locations[game.previousLocationIndex]
         ).style.zIndex) + 1;
       game.scrollingText += 1;
+      if (game.speakers["responding"].speaking) {
+        helperFunctions.renderResponse(game, game.scrollingText, townCtx);
+      }
     },
   };
   const step = () => {
@@ -450,6 +477,17 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } else if (game.map.town.here) {
       game.objective = helperFunctions.detectHoverCollision(e, game["environment"]["town"]);
+      game.hoveredResponse = [false, false, false, false];
+      if (helperFunctions.myRange(
+        e.clientX,
+        e.clientY,
+        290,
+        1025,
+        517,
+        624
+      )) {
+        game.hoveredResponse[Math.floor((e.clientY - 517) / 30)] = true;
+      }
     }
   });
   document.addEventListener("click", (e) => {
@@ -462,6 +500,27 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     if (game.map.town.here) {
+      game.selectedResponse = 1;
+      if (helperFunctions.myRange(
+        e.clientX,
+        e.clientY,
+        290,
+        1025,
+        517,
+        624
+      )) {
+        game.selectedResponse = Math.floor((e.clientY - 517) / 30);
+        game.previousSpeaker = helperFunctions.currentSpeaker(game.speakers);
+        if (!game.speakers["responding"].speaking) {
+          game.scrollingText = 0;
+        }
+        game.speakers["responding"].speaking = true;
+        game.speakers[game.previousSpeaker].speaking = false;
+        if (helperFunctions.renderResponse(game, game.scrollingText, townCtx)) {
+          game.speakers["responding"].speaking = false;
+          game.speakers[game.previousSpeaker].speaking = true;
+        }
+      }
       var currentAction = helperFunctions.identifyClickedAction(game.actions, e);
       var previousAction = helperFunctions.currentAction(game.actions);
       if (currentAction === "") {
@@ -469,6 +528,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       game.actions[previousAction].selected = false;
       game.actions[currentAction].selected = true;
+      if (game.inDialog) {
+        game.actions
+      }
       if (currentAction === "walk") {
         game["albrecht"].moving = true;
         game["albrecht"].moves = helperFunctions.moveCalc(

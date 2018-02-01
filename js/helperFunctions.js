@@ -208,7 +208,22 @@ export const checkSpeakers = function(gameObject) {
   return validSpeakers;
 };
 
+export const parseSentence = function(string, index) {
+  var array = ["", "", ""];
+  let i = 0;
+  let j = 0;
+  while (i < string.length) {
+    if (Math.floor(i / index) > j && (string[i] === " ")) {
+      j += 1;
+    }
+    array[j] += string[i];
+    i += 1;
+  }
+  return array;
+};
+
 export const writeDialog = function(game, canvasContext, indice) {
+  let completed = false;
   var temp = canvasContext.font;
   var temp2 = canvasContext.fillStyle;
   canvasContext.font = "22px serif";
@@ -219,20 +234,40 @@ export const writeDialog = function(game, canvasContext, indice) {
     ) {
     var sentence =
     game["speakers"][game.validSpeakers[0]].responses.open.slice(0, indice);
-    var sentenceArray = ["","",""];
-    let i = 0;
-    let j = 0;
-    while (i < sentence.length) {
-      if (Math.floor(i / 75) > j && (sentence[i] === " ")) {
-        j += 1;
-      }
-      sentenceArray[j] += (sentence[i]);
-      i += 1;
-    }
+    var sentenceArray = parseSentence(sentence, 75);
+    completed =
+    (game["speakers"][game.validSpeakers[0]].responses.open.length
+    < indice);
     canvasContext.fillText(sentenceArray[0], 273, 505);
     canvasContext.fillText(sentenceArray[1], 273, 535);
     canvasContext.fillText(sentenceArray[2], 273, 565);
   }
+  if (completed) {
+    var t = Math.floor(game["speakers"][game.validSpeakers[0]].responses.open.length / 75);
+    game["speakers"]["albrecht"]["responses"][game.validSpeakers[0]][1].forEach((e) => {
+      var response = parseSentence(e, 75);
+      t += 1;
+      if (game.hoveredResponse[t - 1]) {
+        canvasContext.fillStyle = "red";
+      } else {
+        canvasContext.fillStyle = "white";
+      }
+      canvasContext.fillText(response[0], 273, (505 + t * 30));
+    });
+  }
   canvasContext.font = temp;
   canvasContext.fillStyle = temp2;
+};
+
+export const renderResponse = function(gameObject, indice, canvasContext) {
+  var thisSpeaker = gameObject.validSpeakers[0];
+  var response = gameObject["speakers"]["albrecht"]["responses"];
+  var thisResponse = response[thisSpeaker][1][gameObject.selectedResponse - 1];
+  let completed = thisResponse.length < indice;
+  thisResponse = thisResponse.slice(0, indice);
+  var thisResponseArray = parseSentence(thisResponse, 75);
+  canvasContext.fillText(thisResponseArray[0], 273, 505);
+  canvasContext.fillText(thisResponseArray[1], 273, 535);
+  canvasContext.fillText(thisResponseArray[2], 273, 565);
+  return completed;
 };
