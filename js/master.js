@@ -447,7 +447,7 @@ document.addEventListener("DOMContentLoaded", () => {
       helperFunctions.renderItems(game.items, townCtx, game.itemListing);
       helperFunctions.writeSentence(game, townCtx);
       helperFunctions.writeDialog(game, townCtx,
-        (Math.floor(game.scrollingText)));
+        (Math.floor(game.scrollingText / 2)));
       game.previousLocationIndex = game.currentLocationIndex;
       game.currentLocationIndex = helperFunctions.currentLocation(game.map);
       document.getElementById(
@@ -458,7 +458,11 @@ document.addEventListener("DOMContentLoaded", () => {
         ).style.zIndex) + 1;
       game.scrollingText += 1;
       if (game.speakers["responding"].speaking) {
-        helperFunctions.renderResponse(game, game.scrollingText, townCtx);
+        if (helperFunctions.renderResponse(game, game.scrollingText, townCtx)) {
+          game.scrollingText = 0;
+          game.speakers["responding"].speaking = false;
+          game.speakers[game.previousSpeaker].speaking = true;
+        }
       }
     },
   };
@@ -516,9 +520,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         game.speakers["responding"].speaking = true;
         game.speakers[game.previousSpeaker].speaking = false;
+
         if (helperFunctions.renderResponse(game, game.scrollingText, townCtx)) {
-          game.speakers["responding"].speaking = false;
-          game.speakers[game.previousSpeaker].speaking = true;
+
         }
       }
       var currentAction = helperFunctions.identifyClickedAction(game.actions, e);
@@ -528,9 +532,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       game.actions[previousAction].selected = false;
       game.actions[currentAction].selected = true;
-      if (game.inDialog) {
-        game.actions
-      }
       if (currentAction === "walk") {
         game["albrecht"].moving = true;
         game["albrecht"].moves = helperFunctions.moveCalc(

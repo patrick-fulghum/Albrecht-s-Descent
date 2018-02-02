@@ -117,15 +117,17 @@ export const detectHoverCollision = function(e, env) {
 };
 
 export const writeSentence = function(gameObject, canvasContext) {
-  var thisAction = currentAction(gameObject['actions']);
-  canvasContext.font = "20px serif";
-  canvasContext.fillText(
-    constructSentence(
-      gameObject["actions"][thisAction].stringLiteral,
-      gameObject["subject"],
-      gameObject["objective"]
-    ), 330, 440
-  );
+  if (gameObject.speakers["albrecht"].speaking) {
+    var thisAction = currentAction(gameObject['actions']);
+    canvasContext.font = "20px serif";
+    canvasContext.fillText(
+      constructSentence(
+        gameObject["actions"][thisAction].stringLiteral,
+        gameObject["subject"],
+        gameObject["objective"]
+      ), 330, 440
+    );
+  }
 };
 
 export const moveCalc = function(x1, y1, x2, y2) {
@@ -260,11 +262,13 @@ export const writeDialog = function(game, canvasContext, indice) {
 };
 
 export const renderResponse = function(gameObject, indice, canvasContext) {
+  canvasContext.font = "22px serif";
+  canvasContext.fillStyle = "white";
   var thisSpeaker = gameObject.validSpeakers[0];
   var response = gameObject["speakers"]["albrecht"]["responses"];
   var thisResponse = response[thisSpeaker][1][gameObject.selectedResponse - 1];
   let completed = thisResponse.length < indice;
-  thisResponse = thisResponse.slice(0, indice);
+  thisResponse = thisResponse.slice(2, indice);
   var thisResponseArray = parseSentence(thisResponse, 75);
   canvasContext.fillText(thisResponseArray[0], 273, 505);
   canvasContext.fillText(thisResponseArray[1], 273, 535);
