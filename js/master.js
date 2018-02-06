@@ -1,5 +1,7 @@
 // import { helperFunctions } from "./helperFunctions";
 import * as helperFunctions from "./helperFunctions";
+import * as dialogTree from "./dialogTree";
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const titleCanvas = document.getElementById("title");
