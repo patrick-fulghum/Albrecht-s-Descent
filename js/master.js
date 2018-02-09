@@ -155,6 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
           open: "Pepin: 'Welcome to Tristam, Prince Albecht. Let me know if there"
           + "is anything I can do to be of assistance.'",
         },
+        tree: dialogTree.generatePepin(),
       },
       cain: {
         speaking: false,
