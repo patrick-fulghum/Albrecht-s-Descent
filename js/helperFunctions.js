@@ -224,8 +224,10 @@ export const parseSentence = function(string, index) {
   return array;
 };
 
-export const writeDialog = function(game, canvasContext, indice) {
+export const writeDialog = function(game, canvasContext, indice, nodeIdx) {
+  if (!game.validSpeakers[0]) { return; }
   let completed = false;
+  let thisNode = game["speakers"][game.validSpeakers[0]].tree[nodeIdx];
   var temp = canvasContext.font;
   var temp2 = canvasContext.fillStyle;
   canvasContext.font = "22px serif";
@@ -234,44 +236,62 @@ export const writeDialog = function(game, canvasContext, indice) {
     game.validSpeakers[0] &&
     game["speakers"][game.validSpeakers[0]].speaking
     ) {
-    var sentence =
-    game["speakers"][game.validSpeakers[0]].responses.open.slice(0, indice);
+    var sentence = thisNode.getLine().slice(0, indice);
     var sentenceArray = parseSentence(sentence, 75);
-    completed =
-    (game["speakers"][game.validSpeakers[0]].responses.open.length
-    < indice);
-    canvasContext.fillText(sentenceArray[0], 273, 505);
-    canvasContext.fillText(sentenceArray[1], 273, 535);
-    canvasContext.fillText(sentenceArray[2], 273, 565);
-  }
-  if (completed) {
-    var t = Math.floor(game["speakers"][game.validSpeakers[0]].responses.open.length / 75);
-    game["speakers"]["albrecht"]["responses"][game.validSpeakers[0]][1].forEach((e) => {
-      var response = parseSentence(e, 75);
-      t += 1;
-      if (game.hoveredResponse[t - 1]) {
-        canvasContext.fillStyle = "red";
-      } else {
-        canvasContext.fillStyle = "white";
-      }
-      canvasContext.fillText(response[0], 273, (505 + t * 30));
-    });
+    completed = (thisNode.getLine().length < indice);
+    if (completed) {
+      let t = 0;
+      let links = thisNode.getLinks();
+      links.forEach((link) => {
+        var response = parseSentence(link.getLine(), 75);
+        var numberofLinesforLine = response.length;
+        if (game.hoveredResponse[t]) {
+          canvasContext.fillStyle = "red";
+        } else {
+          canvasContext.fillStyle = "white";
+        }
+        canvasContext.fillText(response[0], 273, (505 + t*30));
+        t++;
+      });
+    } else {
+      canvasContext.fillText(sentenceArray[0], 273, 505);
+      canvasContext.fillText(sentenceArray[1], 273, 535);
+      canvasContext.fillText(sentenceArray[2], 273, 565);
+    }
   }
   canvasContext.font = temp;
   canvasContext.fillStyle = temp2;
 };
 
-export const renderResponse = function(gameObject, indice, canvasContext) {
+export const renderResponse = function(
+  gameObject, indice, canvasContext, nodeIdx, linkIndex
+  ) {
   canvasContext.font = "22px serif";
   canvasContext.fillStyle = "white";
-  var thisSpeaker = gameObject.validSpeakers[0];
-  var response = gameObject["speakers"]["albrecht"]["responses"];
-  var thisResponse = response[thisSpeaker][1][gameObject.selectedResponse - 1];
-  let completed = thisResponse.length < indice;
-  thisResponse = thisResponse.slice(2, indice);
-  var thisResponseArray = parseSentence(thisResponse, 75);
+  var myTree = gameObject["speakers"][gameObject.previousSpeaker].tree;
+  var thisLink = myTree[nodeIdx].getLink(linkIndex);
+  var response = thisLink.getLine();
+  let completed = (response.length < indice);
+  response = response.slice(0, indice);
+  let nextNode = thisLink.getNextNode();
+  var thisResponseArray = parseSentence(response, 75);
   canvasContext.fillText(thisResponseArray[0], 273, 505);
   canvasContext.fillText(thisResponseArray[1], 273, 535);
   canvasContext.fillText(thisResponseArray[2], 273, 565);
-  return completed;
+  if (completed) {
+    return nextNode;
+  } else {
+    return nodeIdx;
+  }
+};
+
+export const endConversation = function(gameObject, nodeIdx) {
+  if (gameObject.previousSpeaker) {
+    let myNode = gameObject["speakers"][gameObject.previousSpeaker]
+    .tree[nodeIdx];
+    if (gameObject.scrollingText > myNode.getLine().length) {
+      return !myNode.hasLinks();
+    }
+    return false;
+  }
 };

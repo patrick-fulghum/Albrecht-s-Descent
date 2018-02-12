@@ -21,8 +21,16 @@ Node.prototype.addLink = function(linkObject) {
   this.links.push(linkObject);
 };
 
+Node.prototype.hasLinks = function() {
+  return Boolean(this.links.length);
+};
+
 Node.prototype.getLink = function(n) {
   return this.links[n];
+};
+
+Node.prototype.getLine = function() {
+  return this.line;
 };
 
 export const Link = function(line, nextNode) {
@@ -61,7 +69,7 @@ export const generatePepin = function() {
   "King Leoric has been going mad. That cursed advisor of his, Lazarus, " +
   "is poisoning his mind. I shudder to think about what Lazarus may " +
   "have said about your mother.", [link4, link5]);
-  let node4 = new Node("Pepin", "Your father sees enemies where there " +
+  let node4 = new Node("Pepin", 4, "Your father sees enemies where there " +
   "are none. He started this war against Westmarch, and suspects there " +
   "are traitors everywhere. Our lord is gripped by terror. I fear your " +
   "mother may have suffered a terrible fate at the hands of your " +

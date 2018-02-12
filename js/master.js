@@ -120,68 +120,30 @@ document.addEventListener("DOMContentLoaded", () => {
       albrecht: {
         speaking: true,
         image: albrechtPortrait,
-        responses: {
-          cain: {
-            1: [
-              " > I had a dream that my mother was in the Cathedral.",
-              " > That is no business of yours, Cain.",
-              " > I must go."
-            ],
-            2: [
-              " > Why do people call my father, the Mad King?",
-              " > I could have your tongue removed for speaking in such a way.",
-              " > Have you seen my mother, the Queen Asylla?",
-              " > I must go."
-            ]
-          },
-          pepin: {
-            1: [
-              " > I had a dream that my mother was in the Cathedral.",
-              " > Goodbye."
-            ],
-            2: [
-              " > Why is Chess the greatest game of all time?",
-              " > Why do people seem to fear the cathedral?",
-              " > Goodbye."
-            ]
-          }
-        },
       },
       pepin: {
         speaking: false,
         image: pepinPortrait,
         location: "town",
-        responses: {
-          open: "Pepin: 'Welcome to Tristam, Prince Albecht. Let me know if there"
-          + "is anything I can do to be of assistance.'",
-        },
         tree: dialogTree.generatePepin(),
       },
       cain: {
         speaking: false,
         image: cainPortrait,
         location: "town",
-        responses: {
-          open: "Cain: 'Prince Albrecht, we weren’t expecting you down from" +
-          " your father’s manor. What brings you to Tristram?'",
-        }
+        tree: dialogTree.generatePepin(),
       },
       griswold: {
         speaking: false,
         image: griswoldPortrait,
         location: "town",
-        responses: {
-          open: "Griswold: 'Welcome to my Smithy, Prince. What can I do for you?'",
-        }
+        tree: dialogTree.generatePepin(),
       },
       ogden: {
         speaking: false,
         image: ogdenPortrait,
         location: "town",
-        responses: {
-          open: "Ogden: 'Ahh! Good Prince Albrecht, you are a little young to" +
-          "be drinking at my tavern boy?'"
-        }
+        tree: dialogTree.generatePepin(),
       },
       dialogBox: {
         image: dialogBox,
@@ -409,7 +371,8 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     slowTime: 0,
     scrollingText: 0,
-    dialogDepth: 0,
+    dialogNode: 0,
+    previousNode: 0,
     hoveredResponse: [false, false, false, false],
     selectedResponse: 1,
     previousSpeaker: "",
@@ -450,7 +413,13 @@ document.addEventListener("DOMContentLoaded", () => {
       helperFunctions.renderItems(game.items, townCtx, game.itemListing);
       helperFunctions.writeSentence(game, townCtx);
       helperFunctions.writeDialog(game, townCtx,
-        (Math.floor(game.scrollingText / 2)));
+        (Math.floor(game.scrollingText / 1)), game.dialogNode);
+      if (helperFunctions.endConversation(game, game.dialogNode)) {
+        game.speakers[game.previousSpeaker].speaking = false;
+        game["speakers"]["albrecht"].speaking = true;
+        game.validSpeakers = [];
+        game.dialogNode = 0;
+      }
       game.previousLocationIndex = game.currentLocationIndex;
       game.currentLocationIndex = helperFunctions.currentLocation(game.map);
       document.getElementById(
@@ -461,10 +430,14 @@ document.addEventListener("DOMContentLoaded", () => {
         ).style.zIndex) + 1;
       game.scrollingText += 1;
       if (game.speakers["responding"].speaking) {
-        if (helperFunctions.renderResponse(game, game.scrollingText, townCtx)) {
+        var temp = helperFunctions.renderResponse(game, game.scrollingText,
+          townCtx, game.dialogNode, game.selectedResponse);
+        if (temp !== game.dialogNode) {
           game.scrollingText = 0;
           game.speakers["responding"].speaking = false;
           game.speakers[game.previousSpeaker].speaking = true;
+          game.previousNode = game.dialogNode;
+          game.dialogNode = temp;
         }
       }
     },
@@ -490,10 +463,10 @@ document.addEventListener("DOMContentLoaded", () => {
         e.clientY,
         290,
         1025,
-        517,
+        487,
         624
       )) {
-        game.hoveredResponse[Math.floor((e.clientY - 517) / 30)] = true;
+        game.hoveredResponse[Math.floor((e.clientY - 487) / 30)] = true;
       }
     }
   });
@@ -507,26 +480,23 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     if (game.map.town.here) {
-      game.selectedResponse = 1;
       if (helperFunctions.myRange(
         e.clientX,
         e.clientY,
         290,
         1025,
-        517,
+        487,
         624
-      )) {
-        game.selectedResponse = Math.floor((e.clientY - 517) / 30);
+      ) && game.validSpeakers[0]) {
+        game.selectedResponse = Math.floor((e.clientY - 487) / 30);
         game.previousSpeaker = helperFunctions.currentSpeaker(game.speakers);
         if (!game.speakers["responding"].speaking) {
           game.scrollingText = 0;
         }
         game.speakers["responding"].speaking = true;
         game.speakers[game.previousSpeaker].speaking = false;
-
-        if (helperFunctions.renderResponse(game, game.scrollingText, townCtx)) {
-
-        }
+        game.dialogNode = helperFunctions.renderResponse(game,
+          game.scrollingText, townCtx, game.dialogNode, game.selectedResponse);
       }
       var currentAction = helperFunctions.identifyClickedAction(game.actions, e);
       var previousAction = helperFunctions.currentAction(game.actions);
