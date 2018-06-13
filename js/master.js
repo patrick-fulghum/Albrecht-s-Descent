@@ -413,7 +413,7 @@ document.addEventListener("DOMContentLoaded", () => {
       helperFunctions.renderItems(game.items, townCtx, game.itemListing);
       helperFunctions.writeSentence(game, townCtx);
       helperFunctions.writeDialog(game, townCtx,
-        (Math.floor(game.scrollingText / 1)), game.dialogNode);
+        (Math.floor(game.scrollingText / 3)), game.dialogNode);
       if (helperFunctions.endConversation(game, game.dialogNode)) {
         game.speakers[game.previousSpeaker].speaking = false;
         game["speakers"]["albrecht"].speaking = true;
